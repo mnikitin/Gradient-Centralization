@@ -14,16 +14,17 @@ def _register_gc_opt():
     def __init__(self, gc_type='gc', **kwargs):
         assert gc_type.lower() in ['gc', 'gcc']
         self.gc_ndim_thr = 1 if gc_type.lower() == 'gc' else 3
-        self._parent_cls = super(self.__class__, self)
-        self._parent_cls.__init__(**kwargs)
+        super(self.__class__, self).__init__(**kwargs)
 
     def update(self, index, weight, grad, state):
         self._gc_update_impl(
-            index, weight, grad, state, self._parent_cls.update)
+            index, weight, grad, state,
+            super(self.__class__, self).update)
 
     def update_multi_precision(self, index, weight, grad, state):
         self._gc_update_impl(
-            index, weight, grad, state, self._parent_cls.update_multi_precision)
+            index, weight, grad, state,
+            super(self.__class__, self).update_multi_precision)
 
     def _gc_update_impl(self, indexes, weights, grads, states, update_func):
         # centralize gradients
